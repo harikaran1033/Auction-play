@@ -66,7 +66,7 @@ export function Home() {
             <span className="status-dot" /> YOUR NEXT AUCTION STARTS HERE
           </div>
           <h1>
-            Welcome to the clubhouse<span className="accent">.</span>
+            Welcome to AuctionPlay<span className="accent">.</span>
           </h1>
           <p>Create a room, join your friends, or resume your auction.</p>
         </div>
