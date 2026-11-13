@@ -1,0 +1,17 @@
+# Dataset import
+
+The original nine files are preserved under `data/`. The adapter in `apps/server/src/data/catalog.ts` reads their actual default-exported JavaScript arrays. Only trusted repository-owned modules are evaluated: never expose this loader as a browser upload endpoint or run untrusted JavaScript.
+
+`npm.cmd run data:import` validates every row with Zod, produces stable SHA-256-derived player/team IDs, and writes an ignored JSON validation report. Errors fail the command; warnings are visible and do not discard the dataset. Repeated catalog loads are deterministic. Database seeding upserts identity and dataset-specific entries in one transaction.
+
+Fields: `NAME`, `NATION`, `ROLE`, `TEAM`, `BASE_PRICE`, `PLAYER_STYLE`, optional `IMAGE_URL`, and `STATS`. Statistics are preserved as JSON. The supplied `PLAYER_STYLE` is a combined description and is retained without inventing a separate bowling style. Images are optional: the UI uses initials when none are supplied, includes image failure fallback, and preloads the next image if present.
+
+Role aliases: WK-Batter → wicket-keeper; Bowling All-Rounder and ALL-ROUNDER → all-rounder; Batsman → batter. Unknown roles generate errors. Nation aliases include New zeland → New Zealand, USA → United States. IPL abbreviations map to franchise names; GT/Gujarat Titans collapse into one team; N/A means no source team and does not create a franchise. IDs derive from normalized player name and nation. Name changes or collisions require explicit future identity overrides; do not merge distinct people with the same name/nation without review.
+
+Deduplication is per dataset using normalized identity, retaining the first entry and reporting later rows. SA20's 112 input records become 101 players. The same person can appear in several datasets under one player identity, with dataset-specific role, price, team and stats. Counts are recorded in README and the generated report.
+
+Money is integer hundredths of an auction credit. Source prices are converted as decimal strings, at most two fractional digits, avoiding multiplication errors. Missing real prices and excess precision fail validation. `testPlayers.js` is explicitly a development fixture with a one-credit default, never an official league roster. The uploaded files do not establish real currencies, official seasons or roster completeness. Edit the adapter's dataset metadata when those are known.
+
+Domestic eligibility is metadata: IPL India; SA20 South Africa; BBL Australia; MLC United States; CPL West Indies; The Hundred England and Wales. ODI/Test international pools disable the overseas distinction using an empty domestic list. These are application configurations and are not assertions about official tournament regulations (e.g. residency exceptions). Both the UI and authoritative rules use the metadata.
+
+To add a future league, add its trusted source file and a config entry, supply domestic nations and explicit unit metadata, then run import/tests and seed. Teams are derived from normalized source-team values and assigned validated six-digit hex colours. League/team presentation can be expanded without introducing Tailwind class names in data. Dataset snapshots are loaded at backend startup: restart after changing source files. Do not edit datasets beneath an active auction; version dataset IDs before changing player identities or prices in a deployed system. There is no untrusted CSV/XLSX upload surface because the supplied formats are JS arrays.

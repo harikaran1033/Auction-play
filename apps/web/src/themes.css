@@ -1,0 +1,808 @@
+/* Alternate palette for legacy and feature surfaces. Inline franchise colours remain independent.
+   Original colours stay as CSS variable fallbacks, preserving Night Club exactly. */
+:root[data-theme="ember"] {
+  --theme-base-0a121a: #111011;
+  --theme-base-0a131ce8: #111011e8;
+  --theme-base-0b1219: #111011;
+  --theme-base-0b151e: #111011;
+  --theme-base-0c1722: #111011;
+  --theme-base-0c1a26: #111011;
+  --theme-base-0d171f: #111011;
+  --theme-base-0d1720: #111011;
+  --theme-base-0d1b25f5: #111011f5;
+  --theme-base-0d1c25: #111011;
+  --theme-base-0d1c27fa: #111011fa;
+  --theme-base-0e1c26: #111011;
+  --theme-base-0e1c27: #111011;
+  --theme-base-100c18: #111011;
+  --theme-base-100d18: #111011;
+  --theme-base-101a23: #111011;
+  --theme-base-101a24: #111011;
+  --theme-base-101b25: #111011;
+  --theme-base-110c18cc: #111011cc;
+  --theme-base-110d18: #111011;
+  --theme-base-110d19: #111011;
+  --theme-base-120e1d: #111011;
+  --theme-base-130e1c: #111011;
+  --theme-base-130e1d: #111011;
+  --theme-base-140d1e: #111011;
+  --theme-base-140e1e: #111011;
+  --theme-base-140e1ef8: #111011f8;
+  --theme-base-150e1ff5: #111011f5;
+  --theme-base-170f22: #111011;
+  --theme-base-171020: #111011;
+  --theme-base-18111f: #111011;
+  --theme-base-181120: #111011;
+  --theme-base-191120: #111011;
+  --theme-base-191121: #111011;
+  --theme-base-191321: #111011;
+  --theme-border-30686a27: #6b343927;
+  --theme-border-3a5261: #6b3439;
+  --theme-border-3c5662: #6b3439;
+  --theme-border-523566: #6b3439;
+  --theme-border-553964: #6b3439;
+  --theme-border-554064: #6b3439;
+  --theme-border-56396a: #6b3439;
+  --theme-border-573762: #6b3439;
+  --theme-border-59446e: #6b3439;
+  --theme-border-5c3571: #6b3439;
+  --theme-border-5d3d70: #6b3439;
+  --theme-border-60347a: #6b3439;
+  --theme-border-604272: #6b3439;
+  --theme-border-634378: #6b3439;
+  --theme-border-635074: #6b3439;
+  --theme-border-644278: #6b3439;
+  --theme-border-654178: #6b3439;
+  --theme-border-664079: #6b3439;
+  --theme-border-67427755: #6b343955;
+  --theme-border-6e4b86: #6b3439;
+  --theme-border-715581: #6b3439;
+  --theme-border-725182: #6b3439;
+  --theme-border-765284: #6b3439;
+  --theme-canvas-020810b8: #090909b8;
+  --theme-canvas-03071036: #09090936;
+  --theme-canvas-030a12b8: #090909b8;
+  --theme-canvas-030b13c9: #090909c9;
+  --theme-canvas-030c1745: #09090945;
+  --theme-canvas-030c174f: #0909094f;
+  --theme-canvas-05101d88: #09090988;
+  --theme-canvas-080411c9: #090909c9;
+  --theme-canvas-080e14: #090909;
+  --theme-canvas-0a1119: #090909;
+  --theme-canvas-0d0913: #090909;
+  --theme-canvas-100b18: #090909;
+  --theme-highlight-c3a2ff: #ffe992;
+  --theme-highlight-cca6fa: #ffe992;
+  --theme-highlight-d0b2e7: #ffe992;
+  --theme-highlight-d0b4e5: #ffe992;
+  --theme-highlight-d0b8e3: #ffe992;
+  --theme-highlight-d0e3ec: #ffe992;
+  --theme-highlight-d1afff: #ffe992;
+  --theme-highlight-d1b0ff: #ffe992;
+  --theme-highlight-d3b8ff: #ffe992;
+  --theme-highlight-d4e7ed: #ffe992;
+  --theme-highlight-d5b2ef: #ffe992;
+  --theme-highlight-d6beff: #ffe992;
+  --theme-highlight-d7c1e6: #ffe992;
+  --theme-highlight-d9beff: #ffe992;
+  --theme-highlight-dac1ff: #ffe992;
+  --theme-highlight-dac5ff: #ffe992;
+  --theme-highlight-dec5ff: #ffe992;
+  --theme-highlight-dfc4f4: #ffe992;
+  --theme-highlight-dfc4f5: #ffe992;
+  --theme-highlight-e0c1f8: #ffe992;
+  --theme-highlight-e0c4f6: #ffe992;
+  --theme-highlight-e0c5ff: #ffe992;
+  --theme-highlight-e1bcff08: #ffe99208;
+  --theme-highlight-e1d0f0: #ffe992;
+  --theme-highlight-e2c4f9: #ffe992;
+  --theme-highlight-e2cbf1: #ffe992;
+  --theme-highlight-e4cbf5: #ffe992;
+  --theme-highlight-e4cff5: #ffe992;
+  --theme-highlight-e6c8ff: #ffe992;
+  --theme-highlight-e6c9ff: #ffe992;
+  --theme-highlight-e8c8ff: #ffe992;
+  --theme-ink-03010720: #05050520;
+  --theme-ink-03080c1a: #0505051a;
+  --theme-ink-03090dca: #050505ca;
+  --theme-line-253a544f: #4023274f;
+  --theme-line-283e49: #402327;
+  --theme-line-293d49: #402327;
+  --theme-line-293e4b: #402327;
+  --theme-line-29404b: #402327;
+  --theme-line-29414d: #402327;
+  --theme-line-2a3d47: #402327;
+  --theme-line-2a3d49: #402327;
+  --theme-line-2a3e49: #402327;
+  --theme-line-2a3e4b: #402327;
+  --theme-line-2a404d: #402327;
+  --theme-line-2a414a: #402327;
+  --theme-line-2a414d: #402327;
+  --theme-line-2a424e: #402327;
+  --theme-line-2a4252: #402327;
+  --theme-line-2b3e47: #402327;
+  --theme-line-2b3e4c: #402327;
+  --theme-line-2b414a: #402327;
+  --theme-line-2b414e: #402327;
+  --theme-line-2b414f: #402327;
+  --theme-line-2b424d: #402327;
+  --theme-line-2b424f: #402327;
+  --theme-line-2b4250: #402327;
+  --theme-line-2b4351: #402327;
+  --theme-line-2b4451: #402327;
+  --theme-line-2b454e: #402327;
+  --theme-line-2b4650: #402327;
+  --theme-line-2b4653: #402327;
+  --theme-line-2c3c46: #402327;
+  --theme-line-2c3e49: #402327;
+  --theme-line-2c404b: #402327;
+  --theme-line-2c424e: #402327;
+  --theme-line-2c4250: #402327;
+  --theme-line-2c4350: #402327;
+  --theme-line-2c4452: #402327;
+  --theme-line-2c4453: #402327;
+  --theme-line-2c4551: #402327;
+  --theme-line-2c4652: #402327;
+  --theme-line-2d404a: #402327;
+  --theme-line-2d4351: #402327;
+  --theme-line-2d454d: #402327;
+  --theme-line-2d4651: #402327;
+  --theme-line-2d4754: #402327;
+  --theme-line-2e4653: #402327;
+  --theme-line-2f4652: #402327;
+  --theme-line-2f4855: #402327;
+  --theme-line-2f4c53: #402327;
+  --theme-line-30434b: #402327;
+  --theme-line-30444c: #402327;
+  --theme-line-304a55: #402327;
+  --theme-line-31434b: #402327;
+  --theme-line-31434e: #402327;
+  --theme-line-314b57: #402327;
+  --theme-line-32424b: #402327;
+  --theme-line-33474f: #402327;
+  --theme-line-344b58: #402327;
+  --theme-line-344f5f: #402327;
+  --theme-line-34505b: #402327;
+  --theme-line-34515c: #402327;
+  --theme-line-36515a: #402327;
+  --theme-line-365260: #402327;
+  --theme-line-36535b: #402327;
+  --theme-line-37585b: #402327;
+  --theme-line-39555f: #402327;
+  --theme-line-3a525d: #402327;
+  --theme-line-3b2650: #402327;
+  --theme-line-3b515a: #402327;
+  --theme-line-3c294d: #402327;
+  --theme-line-3c304c: #402327;
+  --theme-line-3d5259: #402327;
+  --theme-line-3e2e4b: #402327;
+  --theme-line-412c4d: #402327;
+  --theme-line-42304d: #402327;
+  --theme-line-43304f: #402327;
+  --theme-line-43324e: #402327;
+  --theme-line-453251: #402327;
+  --theme-line-46334f: #402327;
+  --theme-line-463550: #402327;
+  --theme-line-473650: #402327;
+  --theme-line-483051: #402327;
+  --theme-line-493154: #402327;
+  --theme-line-493252: #402327;
+  --theme-line-493253: #402327;
+  --theme-line-493451: #402327;
+  --theme-line-493658: #402327;
+  --theme-line-4a3456: #402327;
+  --theme-line-4a3457: #402327;
+  --theme-line-4b315f: #402327;
+  --theme-line-4b325a: #402327;
+  --theme-line-4b345d: #402327;
+  --theme-line-4b3b5b: #402327;
+  --theme-line-4c315b: #402327;
+  --theme-line-4d325d: #402327;
+  --theme-line-4d345b: #402327;
+  --theme-line-4d3a5b: #402327;
+  --theme-line-503064: #402327;
+  --theme-line-50345f: #402327;
+  --theme-line-513360: #402327;
+  --theme-line-51395f: #402327;
+  --theme-line-54335f: #402327;
+  --theme-quiet-71528a: #ac908b;
+  --theme-quiet-7394a7: #ac908b;
+  --theme-quiet-7398aa: #ac908b;
+  --theme-quiet-7599a9: #ac908b;
+  --theme-quiet-7695a4: #ac908b;
+  --theme-quiet-7697a5: #ac908b;
+  --theme-quiet-769baa: #ac908b;
+  --theme-quiet-77518e: #ac908b;
+  --theme-quiet-775287: #ac908b;
+  --theme-quiet-77548a: #ac908b;
+  --theme-quiet-775596: #ac908b;
+  --theme-quiet-7895a4: #ac908b;
+  --theme-quiet-7899a7: #ac908b;
+  --theme-quiet-789cad: #ac908b;
+  --theme-quiet-79558e: #ac908b;
+  --theme-quiet-7999a8: #ac908b;
+  --theme-quiet-7a96a6: #ac908b;
+  --theme-quiet-7b528e: #ac908b;
+  --theme-quiet-7b929f: #ac908b;
+  --theme-quiet-7b98a7: #ac908b;
+  --theme-quiet-7c9cae: #ac908b;
+  --theme-quiet-7d99a8: #ac908b;
+  --theme-quiet-7d99a9: #ac908b;
+  --theme-quiet-7e589b: #ac908b;
+  --theme-quiet-7e98a2: #ac908b;
+  --theme-quiet-7e9baa: #ac908b;
+  --theme-quiet-7e9bab: #ac908b;
+  --theme-quiet-7e9eaa: #ac908b;
+  --theme-quiet-7f939f: #ac908b;
+  --theme-quiet-7f969f: #ac908b;
+  --theme-quiet-7f96a3: #ac908b;
+  --theme-quiet-7f98a4: #ac908b;
+  --theme-quiet-7f9aab: #ac908b;
+  --theme-quiet-7f9ba9: #ac908b;
+  --theme-quiet-7f9bab: #ac908b;
+  --theme-quiet-7f9cab: #ac908b;
+  --theme-quiet-7f9eae: #ac908b;
+  --theme-quiet-809aaa: #ac908b;
+  --theme-quiet-809ba9: #ac908b;
+  --theme-quiet-809fac: #ac908b;
+  --theme-quiet-81929e: #ac908b;
+  --theme-quiet-819da9: #ac908b;
+  --theme-quiet-819faf: #ac908b;
+  --theme-quiet-829aa9: #ac908b;
+  --theme-quiet-829ba7: #ac908b;
+  --theme-quiet-829c9f: #ac908b;
+  --theme-quiet-839daa: #ac908b;
+  --theme-quiet-869ba7: #ac908b;
+  --theme-quiet-8763a3: #ac908b;
+  --theme-quiet-89609d: #ac908b;
+  --theme-quiet-8ba0a6: #ac908b;
+  --theme-quiet-8f7a9e: #ac908b;
+  --theme-quiet-9069a8: #ac908b;
+  --theme-quiet-9785aa: #ac908b;
+  --theme-raised-172936: #25191b;
+  --theme-raised-17333c2e: #25191b2e;
+  --theme-raised-192c35: #25191b;
+  --theme-raised-192f3e: #25191b;
+  --theme-raised-1a2d38: #25191b;
+  --theme-raised-1c2b34: #25191b;
+  --theme-raised-1c3340: #25191b;
+  --theme-raised-1c3b3c: #25191b;
+  --theme-raised-1c3c42: #25191b;
+  --theme-raised-1d2a33: #25191b;
+  --theme-raised-202c35: #25191b;
+  --theme-raised-213844: #25191b;
+  --theme-raised-223840: #25191b;
+  --theme-raised-223b47: #25191b;
+  --theme-raised-23303a: #25191b;
+  --theme-raised-23333f: #25191b;
+  --theme-raised-23343e: #25191b;
+  --theme-raised-24313a: #25191b;
+  --theme-raised-243741: #25191b;
+  --theme-raised-253039: #25191b;
+  --theme-raised-253d4a: #25191b;
+  --theme-raised-26343d: #25191b;
+  --theme-raised-26343e: #25191b;
+  --theme-raised-263640: #25191b;
+  --theme-raised-263740: #25191b;
+  --theme-raised-263842: #25191b;
+  --theme-raised-263c45: #25191b;
+  --theme-raised-272032: #25191b;
+  --theme-raised-27343d: #25191b;
+  --theme-raised-273640: #25191b;
+  --theme-raised-273743: #25191b;
+  --theme-raised-283b47: #25191b;
+  --theme-raised-291a36: #25191b;
+  --theme-raised-291c3f: #25191b;
+  --theme-raised-292031: #25191b;
+  --theme-raised-293a45: #25191b;
+  --theme-raised-293b43: #25191b;
+  --theme-raised-293b45: #25191b;
+  --theme-raised-293b47: #25191b;
+  --theme-raised-2a3b45: #25191b;
+  --theme-raised-2a3c46: #25191b;
+  --theme-raised-2a4145: #25191b;
+  --theme-raised-2b193c: #25191b;
+  --theme-raised-2b3a42: #25191b;
+  --theme-raised-2c1e39: #25191b;
+  --theme-raised-2e1c41: #25191b;
+  --theme-raised-302044: #25191b;
+  --theme-raised-33213f: #25191b;
+  --theme-raised-342044: #25191b;
+  --theme-raised-342542: #25191b;
+  --theme-raised-38233f: #25191b;
+  --theme-raised-392443: #25191b;
+  --theme-raised-392b44: #25191b;
+  --theme-raised-3a2a46: #25191b;
+  --theme-raised-3c244c: #25191b;
+  --theme-raised-3c264a: #25191b;
+  --theme-red-7346a126: #ed354926;
+  --theme-red-744b97: #ed3549;
+  --theme-red-7d52a5: #ed3549;
+  --theme-red-8864b3: #ed3549;
+  --theme-red-8b55c019: #ed354919;
+  --theme-red-8f66a9: #ed3549;
+  --theme-red-976cb3: #ed3549;
+  --theme-red-9a6db8: #ed3549;
+  --theme-secondary-82a3b1: #c9bcb5;
+  --theme-secondary-869eac: #c9bcb5;
+  --theme-secondary-86a2b0: #c9bcb5;
+  --theme-secondary-8aa0ad: #c9bcb5;
+  --theme-secondary-8aa8b6: #c9bcb5;
+  --theme-secondary-8aa9b6: #c9bcb5;
+  --theme-secondary-8ca4ad: #c9bcb5;
+  --theme-secondary-8caab7: #c9bcb5;
+  --theme-secondary-8ea7af: #c9bcb5;
+  --theme-secondary-8fabb9: #c9bcb5;
+  --theme-secondary-8faeaf: #c9bcb5;
+  --theme-secondary-90a7b8: #c9bcb5;
+  --theme-secondary-91a3b0: #c9bcb5;
+  --theme-secondary-91a3b1: #c9bcb5;
+  --theme-secondary-91a6ae: #c9bcb5;
+  --theme-secondary-91aab9: #c9bcb5;
+  --theme-secondary-91aebb: #c9bcb5;
+  --theme-secondary-91b3b5: #c9bcb5;
+  --theme-secondary-93a2ac: #c9bcb5;
+  --theme-secondary-93a9b3: #c9bcb5;
+  --theme-secondary-94a8b7: #c9bcb5;
+  --theme-secondary-94b6c3: #c9bcb5;
+  --theme-secondary-95a6ab: #c9bcb5;
+  --theme-secondary-98b8bd: #c9bcb5;
+  --theme-secondary-9aabb4: #c9bcb5;
+  --theme-secondary-9aaeaf: #c9bcb5;
+  --theme-secondary-9bb0bc: #c9bcb5;
+  --theme-secondary-9d75bd: #c9bcb5;
+  --theme-secondary-9db4c3: #c9bcb5;
+  --theme-secondary-9eb2ba: #c9bcb5;
+  --theme-secondary-9eb2bd: #c9bcb5;
+  --theme-secondary-9f8aaf: #c9bcb5;
+  --theme-secondary-9fb4bd: #c9bcb5;
+  --theme-secondary-a0bdbd: #c9bcb5;
+  --theme-secondary-a278c0: #c9bcb5;
+  --theme-secondary-a2b6be: #c9bcb5;
+  --theme-secondary-a2b8c5: #c9bcb5;
+  --theme-secondary-a3b8c2: #c9bcb5;
+  --theme-secondary-a4bbbc: #c9bcb5;
+  --theme-secondary-a5b7c3: #c9bcb5;
+  --theme-secondary-a5b8c2: #c9bcb5;
+  --theme-secondary-a68cba: #c9bcb5;
+  --theme-secondary-a780c5: #c9bcb5;
+  --theme-secondary-a8b7bd: #c9bcb5;
+  --theme-secondary-a8b9c3: #c9bcb5;
+  --theme-secondary-a998b8: #c9bcb5;
+  --theme-secondary-a999bd: #c9bcb5;
+  --theme-secondary-a99ab9: #c9bcb5;
+  --theme-secondary-aac6d0: #c9bcb5;
+  --theme-secondary-ab96bb: #c9bcb5;
+  --theme-secondary-ae98bf: #c9bcb5;
+  --theme-secondary-af9cbe: #c9bcb5;
+  --theme-secondary-b29bc5: #c9bcb5;
+  --theme-secondary-b29dc2: #c9bcb5;
+  --theme-secondary-b2c1c9: #c9bcb5;
+  --theme-secondary-b2c7cf: #c9bcb5;
+  --theme-secondary-b3a0c2: #c9bcb5;
+  --theme-secondary-b3c8d3: #c9bcb5;
+  --theme-secondary-b4a1c5: #c9bcb5;
+  --theme-secondary-b4a3c8: #c9bcb5;
+  --theme-secondary-b4cbd7: #c9bcb5;
+  --theme-secondary-b4cfd8: #c9bcb5;
+  --theme-secondary-b59bc6: #c9bcb5;
+  --theme-secondary-b59bc7: #c9bcb5;
+  --theme-secondary-b59dc7: #c9bcb5;
+  --theme-secondary-b5a1c5: #c9bcb5;
+  --theme-secondary-b5a1c7: #c9bcb5;
+  --theme-secondary-b5a2c5: #c9bcb5;
+  --theme-secondary-b5a4c4: #c9bcb5;
+  --theme-secondary-b5a4c6: #c9bcb5;
+  --theme-secondary-b5c8d3: #c9bcb5;
+  --theme-secondary-b69acb: #c9bcb5;
+  --theme-secondary-b6a5c5: #c9bcb5;
+  --theme-secondary-b6a8c7: #c9bcb5;
+  --theme-secondary-b79bc8: #c9bcb5;
+  --theme-secondary-b79cc9: #c9bcb5;
+  --theme-secondary-b79ccf: #c9bcb5;
+  --theme-secondary-b7a0c8: #c9bcb5;
+  --theme-secondary-b7a5c8: #c9bcb5;
+  --theme-secondary-b9a0ce: #c9bcb5;
+  --theme-secondary-b9a4ca: #c9bcb5;
+  --theme-secondary-b9aacb: #c9bcb5;
+  --theme-secondary-bba0ce: #c9bcb5;
+  --theme-secondary-bba5ca: #c9bcb5;
+  --theme-secondary-bba5cd: #c9bcb5;
+  --theme-secondary-bca6ce: #c9bcb5;
+  --theme-secondary-bca6d5: #c9bcb5;
+  --theme-secondary-bca9ca: #c9bcb5;
+  --theme-secondary-bda3cf: #c9bcb5;
+  --theme-secondary-bda6cf: #c9bcb5;
+  --theme-secondary-bda8cf: #c9bcb5;
+  --theme-secondary-bda8d0: #c9bcb5;
+  --theme-secondary-bea6d0: #c9bcb5;
+  --theme-secondary-c0a7d1: #c9bcb5;
+  --theme-secondary-c0a7d2: #c9bcb5;
+  --theme-secondary-c0abd2: #c9bcb5;
+  --theme-secondary-c1b5cf: #c9bcb5;
+  --theme-secondary-c4b2d0: #c9bcb5;
+  --theme-secondary-c4b3d5: #c9bcb5;
+  --theme-secondary-c5b2d3: #c9bcb5;
+  --theme-secondary-c6afd6: #c9bcb5;
+  --theme-secondary-c6b3d8: #c9bcb5;
+  --theme-secondary-c8afd9: #c9bcb5;
+  --theme-soft-b5cfda: #e9ded5;
+  --theme-soft-b8cfd9: #e9ded5;
+  --theme-soft-b9d1da: #e9ded5;
+  --theme-soft-bad2d8: #e9ded5;
+  --theme-soft-bbd5d7: #e9ded5;
+  --theme-soft-bcd0d9: #e9ded5;
+  --theme-soft-bcd1db: #e9ded5;
+  --theme-soft-c2d5de: #e9ded5;
+  --theme-soft-c5d9e2: #e9ded5;
+  --theme-soft-c6d1d6: #e9ded5;
+  --theme-soft-c8b9d8: #e9ded5;
+  --theme-soft-c9d6df: #e9ded5;
+  --theme-soft-cad9e3: #e9ded5;
+  --theme-soft-d1bddf: #e9ded5;
+  --theme-soft-dae7ef: #e9ded5;
+  --theme-soft-ddcfe8: #e9ded5;
+  --theme-surface-0d1929: #191416;
+  --theme-surface-0e1d29: #191416;
+  --theme-surface-0e202b: #191416;
+  --theme-surface-0f222d: #191416;
+  --theme-surface-101a27: #191416;
+  --theme-surface-101b27: #191416;
+  --theme-surface-101b28: #191416;
+  --theme-surface-101d26: #191416;
+  --theme-surface-101d28: #191416;
+  --theme-surface-102029: #191416;
+  --theme-surface-10202b: #191416;
+  --theme-surface-10202c: #191416;
+  --theme-surface-10212d: #191416;
+  --theme-surface-10212e: #191416;
+  --theme-surface-10232c: #191416;
+  --theme-surface-10232ef2: #191416f2;
+  --theme-surface-10232ff5: #191416f5;
+  --theme-surface-111c25: #191416;
+  --theme-surface-111c26: #191416;
+  --theme-surface-111d26: #191416;
+  --theme-surface-111d26e8: #191416e8;
+  --theme-surface-111d28: #191416;
+  --theme-surface-111e29: #191416;
+  --theme-surface-111f29: #191416;
+  --theme-surface-111f2b: #191416;
+  --theme-surface-121d28: #191416;
+  --theme-surface-121e28: #191416;
+  --theme-surface-121f2a: #191416;
+  --theme-surface-12212b: #191416;
+  --theme-surface-132029: #191416;
+  --theme-surface-13212b: #191416;
+  --theme-surface-13212d: #191416;
+  --theme-surface-13232b: #191416;
+  --theme-surface-132530: #191416;
+  --theme-surface-14202b: #191416;
+  --theme-surface-14222c: #191416;
+  --theme-surface-14232d: #191416;
+  --theme-surface-142530: #191416;
+  --theme-surface-14262a: #191416;
+  --theme-surface-142733: #191416;
+  --theme-surface-142733f5: #191416f5;
+  --theme-surface-152430: #191416;
+  --theme-surface-152a35: #191416;
+  --theme-surface-152c2c: #191416;
+  --theme-surface-162b33: #191416;
+  --theme-surface-172830: #191416;
+  --theme-surface-172a35: #191416;
+  --theme-surface-172b35: #191416;
+  --theme-surface-172d2e: #191416;
+  --theme-surface-182831: #191416;
+  --theme-surface-182933: #191416;
+  --theme-surface-182d2dda: #191416da;
+  --theme-surface-192c30: #191416;
+  --theme-surface-1b1228f5: #191416f5;
+  --theme-surface-1b1325: #191416;
+  --theme-surface-1b1326: #191416;
+  --theme-surface-1b1424: #191416;
+  --theme-surface-1b2a2e: #191416;
+  --theme-surface-1c1228: #191416;
+  --theme-surface-1c1425: #191416;
+  --theme-surface-1d132af5: #191416f5;
+  --theme-surface-1d1428: #191416;
+  --theme-surface-1e142e: #191416;
+  --theme-surface-20142f: #191416;
+  --theme-surface-211033: #191416;
+  --theme-surface-21152cef: #191416ef;
+  --theme-surface-21152d: #191416;
+  --theme-surface-22162e: #191416;
+  --theme-surface-231a30: #191416;
+  --theme-surface-241132: #191416;
+  --theme-surface-24162feb: #191416eb;
+  --theme-surface-24172f: #191416;
+  --theme-surface-241831: #191416;
+  --theme-surface-251134: #191416;
+  --theme-surface-251333: #191416;
+  --theme-surface-271238: #191416;
+  --theme-surface-291636: #191416;
+  --theme-text-e0ecef: #fff7ec;
+  --theme-text-e3edf3: #fff7ec;
+  --theme-text-e4d0ff: #fff7ec;
+  --theme-text-e5cfff: #fff7ec;
+  --theme-text-e7ccff: #fff7ec;
+  --theme-text-e7d4f7: #fff7ec;
+  --theme-text-e8ceff: #fff7ec;
+  --theme-text-e8d6ff: #fff7ec;
+  --theme-text-e9ceff: #fff7ec;
+  --theme-text-ead4ff: #fff7ec;
+  --theme-text-ead6f7: #fff7ec;
+  --theme-text-eaf2f4: #fff7ec;
+  --theme-text-ecdcff: #fff7ec;
+  --theme-text-ece1fa: #fff7ec;
+  --theme-text-edddfa: #fff7ec;
+  --theme-text-ede0fa: #fff7ec;
+  --theme-text-ede0ff: #fff7ec;
+  --theme-text-edf3f6: #fff7ec;
+  --theme-text-eed7ff: #fff7ec;
+  --theme-text-eed9ff: #fff7ec;
+  --theme-text-eedbff: #fff7ec;
+  --theme-text-eee0fa: #fff7ec;
+  --theme-text-f0deff: #fff7ec;
+  --theme-text-f0e2fb: #fff7ec;
+  --theme-text-f0e2ff: #fff7ec;
+  --theme-text-f0e5fc: #fff7ec;
+  --theme-text-f0e5ff: #fff7ec;
+  --theme-text-f0f5f6: #fff7ec;
+  --theme-text-f1d8ff: #fff7ec;
+  --theme-text-f2ddff: #fff7ec;
+  --theme-text-f2e5ff: #fff7ec;
+  --theme-text-f2e7ff: #fff7ec;
+  --theme-text-f3e4ff: #fff7ec;
+  --theme-text-f3e5ff: #fff7ec;
+  --theme-text-f3eafa: #fff7ec;
+  --theme-text-f3eaff: #fff7ec;
+  --theme-text-f4eaff: #fff7ec;
+  --theme-text-f4ecff: #fff7ec;
+  --theme-text-f5efff: #fff7ec;
+  --theme-yellow-84b9d3: #ffd43b;
+  --theme-yellow-9974e0: #ffd43b;
+  --theme-yellow-9974e026: #ffd43b26;
+  --theme-yellow-9d73d3: #ffd43b;
+  --theme-yellow-9d73d366: #ffd43b66;
+  --theme-yellow-9f6ee829: #ffd43b29;
+  --theme-yellow-a07bc4: #ffd43b;
+  --theme-yellow-a278e02b: #ffd43b2b;
+  --theme-yellow-a577d326: #ffd43b26;
+  --theme-yellow-a680d1: #ffd43b;
+  --theme-yellow-a773d71c: #ffd43b1c;
+  --theme-yellow-aa78d624: #ffd43b24;
+  --theme-yellow-aa7bd2: #ffd43b;
+  --theme-yellow-b183f42b: #ffd43b2b;
+  --theme-yellow-b28ae71a: #ffd43b1a;
+  --theme-yellow-b483e929: #ffd43b29;
+  --theme-yellow-ba8fdb: #ffd43b;
+  --theme-yellow-bd91f4: #ffd43b;
+  --theme-yellow-c5a9d9: #ffd43b;
+  --theme-yellow-c6a4e1: #ffd43b;
+  --theme-yellow-c8aedf: #ffd43b;
+  --theme-yellow-c9a8e3: #ffd43b;
+  --accent: #ffd43b;
+  --accent-foreground: #171004;
+  --team-primary: #ed3549;
+  --team-accent: #ffd43b;
+  --team-tint: #ed354926;
+  color-scheme: dark;
+}
+
+:root[data-theme="ember"] .sidebar nav a.active {
+  background: #ed35491a;
+  border-color: #ed35495c;
+  color: #ffd43b;
+  box-shadow: inset 3px 0 #ed3549;
+}
+.sidebar .brand .accent {
+  color: var(--accent);
+}
+.sidebar .brand {
+  font-size: 22px;
+  font-weight: 700;
+  gap: 9px;
+  margin-left: 0;
+  margin-right: 0;
+  letter-spacing: -1px;
+}
+.sidebar .brand > span:last-child {
+  white-space: nowrap;
+}
+.sidebar .brand-ball,
+.sidebar .brand-ball img {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+:root[data-theme="ember"] .brand-ball img {
+  content: url("/icon-ember.svg");
+}
+:root[data-theme="ember"] .nav-label,
+:root[data-theme="ember"] .topbar-label,
+:root[data-theme="ember"] .brand small,
+:root[data-theme="ember"] .sidebar-bottom,
+:root[data-theme="ember"] footer {
+  color: var(--quiet);
+}
+:root[data-theme="ember"] .button-primary {
+  background: #ffd43b;
+  border-color: #ffe78c;
+  color: #171004;
+  box-shadow: 0 3px 0 #a62732;
+}
+:root[data-theme="ember"] .button-primary:hover {
+  background: #ffe477;
+}
+:root[data-theme="ember"] .home-actions-panel {
+  background: linear-gradient(115deg, #341317, #131112 65%, #240e11);
+  border-color: #9b3541;
+}
+:root[data-theme="ember"] .home-actions-panel::after {
+  background: repeating-linear-gradient(
+    125deg,
+    transparent 0 78px,
+    #ff394d16 79px 81px,
+    transparent 82px 145px
+  );
+}
+:root[data-theme="ember"] .room-tools-tabs button.active,
+:root[data-theme="ember"] .segmented button.active {
+  color: #ffe477;
+  background: #ed35491c;
+  border-color: #b74450;
+}
+:root[data-theme="ember"] ::selection {
+  background: #ffd43b44;
+  color: #fff7ec;
+}
+:root[data-theme="ember"] .trade-player.selected,
+:root[data-theme="ember"] .results-teams > button.selected {
+  background: #ed35491c !important;
+  border-color: #b74450 !important;
+}
+
+.theme-toggle.button {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.theme-options .theme-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-input);
+  cursor: pointer;
+  min-width: 0;
+}
+.theme-option.is-current {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--surface-raised);
+}
+.theme-option:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.theme-option > input {
+  position: absolute;
+  top: 23px;
+  right: 23px;
+  z-index: 1;
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.theme-preview {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: 116px;
+  border-radius: 6px;
+  border: 1px solid #513c6e;
+  background: #100b18;
+  color: #c3a2ff;
+}
+.theme-preview > span {
+  position: absolute;
+  top: 17px;
+  left: 18px;
+  font: italic 900 31px/0.95 var(--display);
+  letter-spacing: -0.02em;
+}
+.theme-preview > i {
+  position: absolute;
+  inset: 0 0 0 57%;
+  background: #663b9a;
+  transform: skew(-23deg) translateX(20px);
+}
+.theme-preview > b,
+.theme-preview > em {
+  position: absolute;
+  bottom: 17px;
+  left: 18px;
+  width: 58px;
+  height: 8px;
+  border-radius: 2px;
+  background: #c3a2ff;
+}
+.theme-preview > em {
+  left: 82px;
+  width: 24px;
+  background: #734ba7;
+}
+.theme-preview.ember {
+  background: #090909;
+  border-color: #87313b;
+  color: #ffd43b;
+}
+.theme-preview.ember > i,
+.theme-preview.ember > em {
+  background: #ed3549;
+}
+.theme-preview.ember > b {
+  background: #ffd43b;
+}
+.theme-option-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+.theme-option.is-current .theme-option-title > svg {
+  color: var(--accent);
+}
+.theme-picker > p {
+  margin-top: 15px;
+}
+@media (max-width: 600px) {
+  .auction-shell .room-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .auction-shell .room-top > .flex {
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
+  }
+  .theme-options {
+    gap: 10px;
+  }
+  .theme-options .theme-option {
+    padding: 10px;
+  }
+  .theme-preview {
+    height: 108px;
+  }
+  .theme-preview > span {
+    font-size: 26px;
+    left: 12px;
+  }
+  .theme-option > input {
+    top: 18px;
+    right: 18px;
+  }
+  .theme-option-title {
+    font-size: 12px;
+  }
+  .theme-option > small {
+    font-size: 10px;
+  }
+}

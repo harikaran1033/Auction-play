@@ -1,0 +1,50 @@
+-- Apply once with Supabase SQL editor or supabase db push.
+-- The backend connects as a privileged Postgres role. Browser writes are denied.
+begin;
+create table public.profiles (id uuid primary key references auth.users on delete cascade, display_name text not null check(length(display_name) between 1 and 40), avatar_url text);
+create table public.leagues (id text primary key, name text not null);
+create table public.datasets (id text primary key, league_id text not null references public.leagues, name text not null, domestic_nations text[] not null default '{}', unit text not null, scale integer not null check(scale>0), fixture boolean not null default false, source text not null);
+create table public.league_teams (id text primary key, dataset_id text not null references public.datasets, name text not null, short_name text not null, color text not null check(color ~ '^#[0-9a-fA-F]{6}$'), unique(dataset_id,name));
+create table public.players (id text primary key, name text not null, nation text not null);
+create table public.dataset_players (dataset_id text not null references public.datasets, player_id text not null references public.players, role text not null check(role in ('batter','bowler','all-rounder','wicket-keeper')), base_price integer not null check(base_price>0), source_team_id text references public.league_teams, batting_style text, bowling_style text, image_url text, stats jsonb not null default '{}', primary key(dataset_id,player_id));
+create table public.rooms (id uuid primary key, code text not null unique, host_id uuid not null references auth.users, dataset_id text not null references public.datasets, status text not null check(status in ('lobby','running','reveal','paused','unsold_decision','completed','cancelled')), version bigint not null check(version>=0), state jsonb not null, created_at timestamptz not null default now());
+create table public.room_memberships (id uuid primary key, room_id uuid not null references public.rooms, user_id uuid not null references auth.users, team_id text not null references public.league_teams, budget integer not null check(budget>=0), blocked boolean not null default false, unique(room_id,user_id));
+create unique index one_owner_per_team on public.room_memberships(room_id,team_id) where not blocked;
+create table public.room_blocks (room_id uuid not null references public.rooms, user_id uuid not null references auth.users, primary key(room_id,user_id));
+create table public.auction_lots (id uuid primary key, room_id uuid not null references public.rooms, player_id text not null references public.players, state jsonb not null);
+create table public.bids (id uuid primary key, room_id uuid not null references public.rooms, lot_id uuid not null, membership_id uuid not null references public.room_memberships, amount integer not null check(amount>0), created_at timestamptz not null);
+-- Live lots are in rooms.state; the ledger records a lot after resolution.
+alter table public.bids add constraint bids_lot_fk foreign key(lot_id) references public.auction_lots deferrable initially deferred;
+create table public.purchases (lot_id uuid primary key, room_id uuid not null references public.rooms, membership_id uuid not null references public.room_memberships, player_id text not null references public.players, amount integer not null check(amount>0), unique(room_id,player_id), foreign key(lot_id) references public.auction_lots deferrable initially deferred);
+create table public.chat_messages (id uuid primary key, room_id uuid not null references public.rooms, user_id uuid not null references auth.users, display_name text not null, body text not null check(length(body) between 1 and 500), created_at timestamptz not null);
+create index chat_history on public.chat_messages(room_id,created_at desc);
+create index membership_user on public.room_memberships(user_id);
+create index rooms_status on public.rooms(status);
+create index purchases_membership on public.purchases(membership_id);
+create table public.saved_lineups (membership_id uuid primary key references public.room_memberships, players text[] not null default '{}', captain text, vice_captain text, check(captain is null or captain=any(players)), check(vice_captain is null or vice_captain=any(players)), check(captain is null or vice_captain is null or captain<>vice_captain));
+alter table public.profiles enable row level security;
+create policy profile_read on public.profiles for select to authenticated using(id=auth.uid());
+create policy profile_update on public.profiles for update to authenticated using(id=auth.uid()) with check(id=auth.uid());
+alter table public.leagues enable row level security;
+alter table public.datasets enable row level security;
+alter table public.league_teams enable row level security;
+alter table public.players enable row level security;
+alter table public.dataset_players enable row level security;
+create policy leagues_read on public.leagues for select using(true);
+create policy datasets_read on public.datasets for select using(true);
+create policy teams_read on public.league_teams for select using(true);
+create policy players_read on public.players for select using(true);
+create policy dataset_players_read on public.dataset_players for select using(true);
+-- No client policies for room data: all access is via membership-checked backend.
+alter table public.rooms enable row level security;
+alter table public.room_memberships enable row level security;
+alter table public.room_blocks enable row level security;
+alter table public.auction_lots enable row level security;
+alter table public.bids enable row level security;
+alter table public.purchases enable row level security;
+alter table public.chat_messages enable row level security;
+alter table public.saved_lineups enable row level security;
+create function public.new_cricket_profile() returns trigger language plpgsql security definer set search_path=public as $$begin insert into public.profiles(id,display_name) values(new.id,left(coalesce(new.raw_user_meta_data->>'display_name',split_part(new.email,'@',1),'Owner'),40));return new;end;$$;
+create trigger cricket_profile_created after insert on auth.users for each row execute function public.new_cricket_profile();
+revoke all on function public.new_cricket_profile() from public,anon,authenticated;
+commit;

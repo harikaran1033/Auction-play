@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AuctionPlay</string>
+    <string name="title_activity_main">AuctionPlay</string>
+    <string name="package_name">app.cricketroom.mobile</string>
+    <string name="custom_url_scheme">app.cricketroom.mobile</string>
+</resources>

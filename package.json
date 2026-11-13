@@ -1,0 +1,44 @@
+{
+  "name": "auctionplay",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n server,web \"npm run dev -w @cricket/server\" \"node scripts/wait-for-server.mjs && npm run dev -w @cricket/web\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "data:import": "tsx scripts/import-data.ts",
+    "db:seed": "tsx --env-file-if-exists=apps/server/.env scripts/seed.ts",
+    "start": "npm run start -w @cricket/server",
+    "check:supabase": "node scripts/check-supabase.mjs",
+    "db:migrate": "tsx --env-file-if-exists=apps/server/.env scripts/migrate.ts",
+    "test:rejoin": "playwright test --config=playwright.rejoin.config.ts",
+    "test:voice": "playwright test --config=playwright.voice.config.ts",
+    "check:postgres": "tsx --env-file-if-exists=apps/server/.env scripts/check-postgres.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.15.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.10.1",
+    "tsx": "^4.19.3",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.31.0",
+    "vitest": "^3.1.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "optionalDependencies": {
+    "lightningcss-win32-x64-msvc": "^1.33.0"
+  }
+}
