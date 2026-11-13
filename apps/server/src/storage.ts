@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { Pool } from "pg";
 import type { Room } from "@cricket/shared";
 import { root } from "./data/catalog.js";
+import { databaseConnectionString } from "./database.js";
 
 export interface Repository {
   all(): Promise<Room[]>;
@@ -236,7 +237,7 @@ export async function createRepository() {
   if (process.env.DATABASE_URL)
     return new PgRepository(
       new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: databaseConnectionString(process.env.DATABASE_URL),
         connectionTimeoutMillis: 15000,
         statement_timeout: 30000,
       }),

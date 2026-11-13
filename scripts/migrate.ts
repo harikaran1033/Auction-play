@@ -1,11 +1,12 @@
 import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { Pool } from "pg";
+import { databaseConnectionString } from "../apps/server/src/database.js";
 
 if (!process.env.DATABASE_URL)
   throw new Error("Set DATABASE_URL in apps/server/.env");
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseConnectionString(process.env.DATABASE_URL),
   connectionTimeoutMillis: 15000,
 });
 let connection;

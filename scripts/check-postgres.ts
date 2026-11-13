@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { Pool, type PoolClient } from "pg";
+import { databaseConnectionString } from "../apps/server/src/database.js";
 import { settingsSchema, type Command, type User } from "@cricket/shared";
 import { loadCatalog } from "../apps/server/src/data/catalog.js";
 import { makeRoom, joinRoom } from "../apps/server/src/rooms.js";
@@ -12,7 +13,7 @@ import {
 } from "../apps/server/src/auction/trades.js";
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseConnectionString(process.env.DATABASE_URL),
   connectionTimeoutMillis: 15000,
 });
 let db: PoolClient | undefined;

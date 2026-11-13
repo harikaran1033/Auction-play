@@ -1,5 +1,11 @@
 # Implementation progress
 
+## Portable Supabase certificate for Render
+
+Bundled the verified public CA under `apps/server/certs` to remove the dependency on a manually uploaded Render Secret File. Backend and TypeScript database scripts now resolve a missing certificate named `supabase-ca.crt` to this bundled file, including legacy Windows and Render paths, with `verify-full` enabled. Existing configured files and unrelated custom CA names are preserved. Credentials and private keys are not included.
+
+Verification: 110 unit tests passed, including eight cases for portable certificate paths, credential/host preservation, existing/custom CA handling and full TLS verification. A read-only connection against the actual configured Postgres database passed while simulating the missing `/etc/secrets/supabase-ca.crt` path; `pg_stat_ssl` confirmed TLS and no rows were changed. Workspace type checks, lint and server build passed.
+
 ## Render install and Node selection fix
 
 Repaired the incomplete cross-platform npm lockfile that caused Render's `npm ci` to report missing Lightning CSS native packages. Added canonical npm entries for the ten missing platforms at the existing 1.33.0 version, synchronized root manifest metadata, and preserved every existing dependency version. Added `.node-version` selecting Node 22 and bounded the package engine to `>=22.12.0 <23` so Render does not select a newer major automatically.

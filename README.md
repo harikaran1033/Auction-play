@@ -57,7 +57,7 @@ For real Supabase accounts and persistence, configure email/password Auth and th
 | `CORS_ORIGINS` | |
 | Optional `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | |
 
-Use Supabase's Postgres/session-pooler connection string and its documented SSL settings. This machine uses `sslmode=verify-full` with a public CA file under `.runtime`; the `sslrootcert` path in `.env` is machine-specific and must be updated if the project moves or is deployed. Keep credentials in `.env`, never in `VITE_*`. The server verifies access tokens with Supabase; the browser restores and refreshes sessions. Configure both frontend and backend to use the same Auth project. Production fails closed without Auth and Postgres configuration.
+Use Supabase's Postgres/session-pooler connection string and its documented SSL settings. This machine uses `sslmode=verify-full` with a public CA file under `.runtime`. The backend bundles that public CA in `apps/server/certs/supabase-ca.crt`: if a configured `supabase-ca.crt` path is missing after deployment, it uses the bundled file with full certificate and hostname verification. Render Secret Files are not required for this certificate. Existing available certificate paths and unrelated custom CAs remain as configured. Keep credentials in `.env`, never in `VITE_*`. The server verifies access tokens with Supabase; the browser restores and refreshes sessions. Configure both frontend and backend to use the same Auth project. Production fails closed without Auth and Postgres configuration.
 
 Run `npm.cmd run check:supabase` to check Auth and catalog tables without displaying credentials. Apply tracked migrations and seed the catalog:
 

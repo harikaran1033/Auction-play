@@ -1,10 +1,13 @@
 import { Pool } from "pg";
+import { databaseConnectionString } from "../apps/server/src/database.js";
 import { loadCatalog } from "../apps/server/src/data/catalog.js";
 if (!process.env.DATABASE_URL)
   throw new Error(
     "Set DATABASE_URL before seeding. Use the Supabase Postgres connection string.",
   );
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+  connectionString: databaseConnectionString(process.env.DATABASE_URL),
+});
 const db = await pool.connect();
 try {
   const { datasets, issues } = await loadCatalog();
