@@ -4,7 +4,7 @@ A working local multiplayer cricket auction built around the player datasets in 
 
 ## Run locally on Windows
 
-Node 22.12 or newer is required (this checkout was verified with Node 22.17). Run from this directory:
+Use Node 22.x, version 22.12 or newer (this checkout was verified with Node 22.17). The root `.node-version` selects the Node 22 release line on compatible hosts. Run from this directory:
 
 ```powershell
 npm.cmd ci

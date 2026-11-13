@@ -1,5 +1,11 @@
 # Implementation progress
 
+## Render install and Node selection fix
+
+Repaired the incomplete cross-platform npm lockfile that caused Render's `npm ci` to report missing Lightning CSS native packages. Added canonical npm entries for the ten missing platforms at the existing 1.33.0 version, synchronized root manifest metadata, and preserved every existing dependency version. Added `.node-version` selecting Node 22 and bounded the package engine to `>=22.12.0 <23` so Render does not select a newer major automatically.
+
+Verification: a clean Linux x64 GNU-targeted `npm ci` completed in an isolated directory with install scripts disabled; the Linux Lightning CSS and Tailwind native binaries were present. This verifies installation and lockfile consistency, not execution of Linux binaries on Windows. The complete local production build and all 102 unit tests passed. Deployment documentation includes the Node override and explicit dev-dependency installation for frontend builds.
+
 ## PostgreSQL lobby recovery fix
 
 Fixed startup recovery failing with `saved_lineups_membership_id_fkey` when an expired lobby seat is removed. Repository mutations now remove dependent lineups for memberships absent from the updated snapshot before deleting those memberships, inside the existing transaction. Bid/purchase foreign keys remain restrictive, and current members' lineups remain intact. No migration or database reset is required.

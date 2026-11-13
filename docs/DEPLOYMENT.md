@@ -1,16 +1,20 @@
-# Hosting setup (not deployed)
+# Hosting setup
 
-No hosting resources or subscriptions were created. The documented target is one Node backend instance, a static frontend, Supabase and optional LiveKit. Set up real Auth/Postgres and run the migration/seed before any deployment. Keep development JSON accounts off ephemeral hosting. Production must set `NODE_ENV=production`; the application refuses missing Supabase Auth or Postgres config.
+The deployment target is one Node backend instance, a static frontend, Supabase and optional LiveKit. Set up real Auth/Postgres and run the migration/seed before any deployment. Keep development JSON accounts off ephemeral hosting. Production must set `NODE_ENV=production`; the application refuses missing Supabase Auth or Postgres config.
 
 ## Frontend: Cloudflare Pages
 
-Use repository root as the build root, `npm ci && npm run build` as the build command, and `apps/web/dist` as output. Set `VITE_API_URL` to the HTTPS backend, along with the public Supabase URL/anon key. `_redirects` supplies the SPA fallback. Do not add server secrets to build-time public variables. The frontend build and PWA cache do not include player datasets; those are served by the backend.
+Use repository root as the build root, `npm ci --include=dev && npm run build -w @cricket/web` as the build command, and `apps/web/dist` as output. Set `VITE_API_URL` to the HTTPS backend, along with the public Supabase URL/anon key. `_redirects` supplies the SPA fallback. Do not add server secrets to build-time public variables. The frontend build and PWA cache do not include player datasets; those are served by the backend.
 
 Cloudflare documents 500 builds/deploys per month on its Free plan and other limits; verify account-specific constraints before use. [Pages limits](https://developers.cloudflare.com/pages/platform/limits/).
 
 ## Backend: Render
 
-Use Node 22.12+ with build command `npm ci` (the server runs TypeScript with tsx) and start command `npm start`. Set `HOST=0.0.0.0`, `NODE_ENV=production`, `DATABASE_URL`, Supabase URL/anon key, exact `CORS_ORIGINS` and optional LiveKit secrets. Port comes from Render's `PORT`. Use one instance. `/api/health` is the health endpoint and exposes no secrets.
+Use Node 22.x, at least 22.12, with build command `npm ci` (the server runs TypeScript with tsx) and start command `npm start`. Leave Root Directory blank so shared packages and league data remain available. The root `.node-version` selects Node 22; if Render has a `NODE_VERSION` environment override, set it to `22` or remove it. Set `HOST=0.0.0.0`, `NODE_ENV=production`, `DATABASE_URL`, Supabase URL/anon key, exact `CORS_ORIGINS` and optional LiveKit secrets. Port comes from Render's `PORT`. Use one instance. `/api/health` is the health endpoint and exposes no secrets.
+
+The frontend can alternatively be a Render Static Site from the same repository: leave Root Directory blank, build with `npm ci --include=dev && npm run build -w @cricket/web`, publish `apps/web/dist`, and add a rewrite from `/*` to `/index.html`. The backend URL supplied for this project is `https://auction-play.onrender.com`; set that as `VITE_API_URL` when building the separately hosted frontend. Frontend dev dependencies are included explicitly because Vite and TypeScript are build tools.
+
+`npm ci` requires a complete cross-platform lockfile. The tracked lockfile includes all Lightning CSS native variants, including Linux x64 GNU for Render. Missing native entries can produce `EUSAGE` before installation begins, even if Windows already builds successfully. Do not replace the reproducible install with dependency upgrades to bypass this error.
 
 Render Free spins down after 15 minutes without inbound traffic and has shared monthly instance-hour and other service constraints. Its filesystem is ephemeral. Sleeping/restarting interrupts active auctions/voice; persisted deadlines are recovered when the backend wakes. Free hosting is appropriate for small development tests, not guaranteed auction uptime. The client uses connecting/retry screens and authoritative reconnect snapshots. [Render Free documentation](https://render.com/docs/free), [FAQ](https://render.com/docs/faq).
 
