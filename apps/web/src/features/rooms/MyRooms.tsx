@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Link } from "react-router";
-import { ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw, Trash2, X } from "lucide-react";
 import type { OwnedRoomSummary } from "@cricket/shared";
 import { api, useAuth } from "../../lib/api";
 import { Button } from "../../components/ui/button";
@@ -16,6 +18,10 @@ const statusLabels: Record<OwnedRoomSummary["status"], string> = {
   cancelled: "Cancelled",
 };
 export function MyRooms({ showEmpty = false }: { showEmpty?: boolean }) {
+  const [selected, setSelected] = useState<OwnedRoomSummary>();
+  const [endForEveryone, setEndForEveryone] = useState(false);
+  const [removing, setRemoving] = useState(false),
+    [removeError, setRemoveError] = useState("");
   const userId = useAuth((s) => s.user?.id);
   const { data, error, isPending, refetch, isFetching } = useQuery({
     queryKey: ["my-rooms", userId],
@@ -116,11 +122,114 @@ export function MyRooms({ showEmpty = false }: { showEmpty?: boolean }) {
                     <ArrowRight size={15} />
                   </Link>
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete room: ${room.name}`}
+                  onClick={() => {
+                    setSelected(room);
+                    setEndForEveryone(false);
+                    setRemoveError("");
+                  }}
+                >
+                  <Trash2 size={17} />
+                </Button>
               </article>
             );
           })}
         </div>
       )}
+      <Dialog.Root
+        open={!!selected}
+        onOpenChange={(open) => {
+          if (!open && !removing) setSelected(undefined);
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="room-tools-overlay" />
+          <Dialog.Content className="room-tools-dialog room-delete-dialog">
+            <div className="room-tools-heading">
+              <div>
+                <Dialog.Title>Remove this room?</Dialog.Title>
+                <Dialog.Description>{selected?.name}</Dialog.Description>
+              </div>
+              <Dialog.Close asChild>
+                <button aria-label="Close delete room" disabled={removing}>
+                  <X size={20} />
+                </button>
+              </Dialog.Close>
+            </div>
+            <div className="room-tools-body">
+              <p>
+                This removes the room from your My rooms list and leaves the
+                auction. Your saved squad stays available after completion.
+                Other owners can continue playing.
+              </p>
+              {selected?.isHost && selected.status !== "completed" && (
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={endForEveryone}
+                    onChange={(e) => setEndForEveryone(e.target.checked)}
+                  />
+                  Also end this auction for everyone
+                </label>
+              )}
+              {endForEveryone && (
+                <p className="form-error">
+                  All owners will be disconnected and this auction will be
+                  closed.
+                </p>
+              )}
+              {removeError && (
+                <p role="alert" className="form-error">
+                  {removeError}
+                </p>
+              )}
+              <div className="squad-actions">
+                <Button
+                  variant="destructive"
+                  disabled={removing}
+                  onClick={async () => {
+                    if (!selected) return;
+                    setRemoving(true);
+                    setRemoveError("");
+                    try {
+                      await api(`/me/rooms/${selected.id}`, {
+                        method: "DELETE",
+                        body: JSON.stringify({ endForEveryone }),
+                      });
+                      await refetch();
+                      setSelected(undefined);
+                    } catch (error) {
+                      setRemoveError(
+                        error instanceof Error
+                          ? error.message
+                          : "Could not remove the room.",
+                      );
+                    } finally {
+                      setRemoving(false);
+                    }
+                  }}
+                >
+                  {removing
+                    ? "Removing…"
+                    : endForEveryone
+                      ? "End auction and delete"
+                      : "Delete from My rooms"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={removing}
+                  onClick={() => setSelected(undefined)}
+                >
+                  Keep room
+                </Button>
+              </div>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   );
 }

@@ -84,6 +84,7 @@ beforeEach(() => {
     dataset,
     settingsSchema.parse({
       name: "Test room",
+      auctionOrder: "source",
       datasetId: "test",
       teamId: "a",
       budget: 1000,

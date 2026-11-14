@@ -125,7 +125,7 @@ export function Rooms() {
                     <Users size={15} />
                     {r.members} / {r.maxTeams} owners
                   </span>
-                  <span>{money(r.budget)} budget</span>
+                  <span>{money(r.budget, undefined, r.currency)} budget</span>
                   <span>{r.squadSize} players / squad</span>
                 </div>
                 <Button asChild variant="secondary">
@@ -199,6 +199,11 @@ export function CreateRoom() {
       overseasCap: 8,
       timerSeconds: 20,
       increment: 10,
+      currency: "inr",
+      bidMode: "tiered",
+      lowBidStep: 50,
+      auctionOrder: "sets",
+      playerPool: "current",
       reserveBudget: true,
       voice: true,
     },
@@ -233,7 +238,7 @@ export function CreateRoom() {
               <span>01</span>
               <div>
                 <h2>Choose your competition</h2>
-                <p>Player pools and teams come from your uploaded datasets.</p>
+                <p>Choose a dated season roster or your full player pool.</p>
               </div>
             </div>
             <div className="league-options">
@@ -252,13 +257,35 @@ export function CreateRoom() {
                   >
                     <strong>{d.id.toUpperCase()}</strong>
                     <small>
-                      {d.playerCount} players · {d.teams.length} teams
+                      {d.currentPlayerCount ?? d.playerCount} season players ·{" "}
+                      {d.teams.length} teams
                     </small>
                     {values.datasetId === d.id && <Check size={15} />}
                   </button>
                 ))}
             </div>
           </section>
+          {league?.season && (
+            <section className="panel form-section">
+              <label>
+                Player pool
+                <select {...register("playerPool")}>
+                  <option value="current">
+                    {league.season} · current season (
+                    {league.currentPlayerCount} players)
+                  </option>
+                  <option value="all">
+                    Full pool including original players ({league.playerCount})
+                  </option>
+                </select>
+              </label>
+              <small className="muted">
+                {league.rosterNote} Verified {league.rosterAsOf}. Added players
+                use a game base price of 0.30; this is not their real contract
+                value.
+              </small>
+            </section>
+          )}
           <section className="panel form-section">
             <div className="step-heading">
               <span>02</span>
@@ -322,7 +349,9 @@ export function CreateRoom() {
                 />
               </label>
               <label>
-                Starting purse (credits)
+                {values.currency === "inr"
+                  ? "Starting purse (₹ Cr)"
+                  : "Starting purse (credits)"}
                 <input
                   inputMode="decimal"
                   value={budgetInput}
@@ -361,18 +390,57 @@ export function CreateRoom() {
                 />
               </label>
               <label>
-                Bid step (credits)
-                <input
-                  inputMode="decimal"
-                  value={incrementInput}
-                  onChange={(e) => {
-                    setIncrementInput(e.target.value);
-                    setValue("increment", creditsToUnits(e.target.value) ?? 0);
-                  }}
-                  placeholder="0.10"
-                />
+                Currency display
+                <select {...register("currency")}>
+                  <option value="inr">Rupees · crores and lakhs</option>
+                  <option value="credits">Auction credits</option>
+                </select>
               </label>
+              <label>
+                Player order
+                <select {...register("auctionOrder")}>
+                  <option value="sets">Randomized role sets</option>
+                  <option value="shuffle">Shuffle the full pool</option>
+                  <option value="source">Original data order</option>
+                </select>
+              </label>
+              <label>
+                Bid increments
+                <select {...register("bidMode")}>
+                  <option value="tiered">Amount-based ladder</option>
+                  <option value="fixed">Fixed step</option>
+                </select>
+              </label>
+              {values.bidMode === "fixed" && (
+                <label>
+                  Bid step ({values.currency === "inr" ? "₹ Cr" : "credits"})
+                  <input
+                    inputMode="decimal"
+                    value={incrementInput}
+                    onChange={(e) => {
+                      setIncrementInput(e.target.value);
+                      setValue(
+                        "increment",
+                        creditsToUnits(e.target.value) ?? 0,
+                      );
+                    }}
+                    placeholder="0.10"
+                  />
+                </label>
+              )}
             </div>
+            {values.bidMode === "tiered" && (
+              <p className="bid-ladder-note">
+                Bid ladder: below 10 → +0.5; 10–20 → +1; 20–30 → +2; 30–50 →
+                +2.5; 50 and above → +3{" "}
+                {values.currency === "inr" ? "Cr" : "credits"}. The opening bid
+                uses the player's base price.
+              </p>
+            )}
+            <small className="muted">
+              Crore/lakh mode expresses the room's virtual purse in ₹ units. It
+              does not convert existing prices using exchange rates.
+            </small>
             <label className="checkbox-label">
               <input type="checkbox" {...register("reserveBudget")} />
               Reserve minimum budget for remaining squad slots
@@ -391,9 +459,9 @@ export function CreateRoom() {
               .map(([key, value]) => (
                 <p className="error-text" key={key}>
                   {key === "budget"
-                    ? "Starting purse: enter 1–10,000 credits, with up to two decimals."
+                    ? `Starting purse: enter 1–10,000 ${values.currency === "inr" ? "Cr" : "credits"}, with up to two decimals.`
                     : key === "increment"
-                      ? "Bid step: enter 0.01–100 credits, with up to two decimals."
+                      ? `Bid step: enter 0.01–100 ${values.currency === "inr" ? "Cr" : "credits"}, with up to two decimals.`
                       : `${key}: ${String(value?.message)}`}
                 </p>
               ))}
@@ -413,7 +481,7 @@ export function CreateRoom() {
           <dl>
             <div>
               <dt>Starting purse</dt>
-              <dd>{money(values.budget, league)}</dd>
+              <dd>{money(values.budget, league, values.currency)}</dd>
             </div>
             <div>
               <dt>Squad size</dt>
@@ -551,7 +619,13 @@ export function JoinRoom() {
             <span className="live-pill">INVITATION FOUND</span>
             <h2>{invite.name}</h2>
             <p>
-              {league?.league} · {money(invite.settings.budget)} budget
+              {league?.league} ·{" "}
+              {money(
+                invite.settings.budget,
+                undefined,
+                invite.settings.currency,
+              )}{" "}
+              budget
             </p>
             <div className="team-options">
               {league?.teams.map((t) => (

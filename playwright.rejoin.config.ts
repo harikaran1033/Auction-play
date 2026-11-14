@@ -13,7 +13,8 @@ export default defineConfig({
   },
   webServer: {
     command:
-      'npx concurrently -k "npm run dev -w @cricket/server" "node scripts/wait-for-server.mjs && npm run dev -w @cricket/web -- --port 5175 --strictPort"',
+      'npx concurrently -k "npx tsx apps/server/src/index.ts" "node scripts/wait-for-server.mjs && npm run dev -w @cricket/web -- --port 5175 --strictPort"',
+    stdout: "pipe",
     url: "http://127.0.0.1:5175",
     reuseExistingServer: false,
     timeout: 90000,
@@ -21,6 +22,7 @@ export default defineConfig({
       SUPABASE_URL: "",
       SUPABASE_ANON_KEY: "",
       DATABASE_URL: "",
+      LOCAL_ROOM_FILE: `.runtime/rejoin-rooms-${process.pid}.json`,
       VITE_SUPABASE_URL: "",
       VITE_SUPABASE_ANON_KEY: "",
       VITE_API_URL: "",

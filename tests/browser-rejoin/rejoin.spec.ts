@@ -41,6 +41,7 @@ test("an owner finds and rejoins a full private auction from Home and its invita
       headers: { Authorization: `Bearer ${a.token}` },
       data: {
         name: "Private rejoin acceptance",
+        auctionOrder: "source",
         datasetId: "ipl",
         teamId: catalog.teams[0].id,
         visibility: "private",

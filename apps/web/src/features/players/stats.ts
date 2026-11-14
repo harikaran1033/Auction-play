@@ -101,7 +101,9 @@ export function playerHighlights(player: Player): StatItem[] {
       : find(batting, "Avg", "Batting average"),
   ];
 }
-export function datasetContext(dataset: Pick<Dataset, "id" | "name">) {
+export function datasetContext(
+  dataset: Pick<Dataset, "id" | "name"> & Partial<Pick<Dataset, "season">>,
+) {
   const formats: Record<string, string> = {
     ipl: "T20",
     bbl: "T20",
@@ -115,9 +117,11 @@ export function datasetContext(dataset: Pick<Dataset, "id" | "name">) {
   };
   return {
     format: formats[dataset.id] ?? "Format not specified",
-    season: /season unspecified/i.test(dataset.name)
-      ? "Season not specified"
-      : dataset.name,
+    season: dataset.season
+      ? `${dataset.season} roster · statistics season not verified`
+      : /season unspecified/i.test(dataset.name)
+        ? "Season not specified"
+        : dataset.name,
   };
 }
 export function boundaryBreakdown(player: Player) {

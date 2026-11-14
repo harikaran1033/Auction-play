@@ -24,9 +24,16 @@ import {
   type TradeState,
 } from "@cricket/shared";
 import { authMode, authenticate, initAuth, localAuth } from "./auth.js";
-import { createRepository } from "./storage.js";
+import { createRepository, PgRepository } from "./storage.js";
+import { seedCatalog } from "./data/seedCatalog.js";
 import { writeCatalog } from "./data/catalog.js";
-import { checkJoin, joinRoom, makeRoom, ownedRooms } from "./rooms.js";
+import {
+  checkJoin,
+  joinRoom,
+  makeRoom,
+  ownedRooms,
+  removeOwnedRoom,
+} from "./rooms.js";
 import { applyCommand, tickRoom } from "./auction/engine.js";
 import { updateLineup } from "./auction/lineup.js";
 import { proposeTrade, respondTrade } from "./auction/trades.js";
@@ -37,6 +44,8 @@ const log = pino({ level: process.env.LOG_LEVEL ?? "info" });
 log.info("Loading AuctionPlay");
 const catalog = await writeCatalog();
 const repository = await createRepository();
+if (repository instanceof PgRepository)
+  await seedCatalog(repository.pool, catalog.datasets);
 await initAuth();
 const dataset = (id: string) => {
   const d = catalog.datasets.find((d) => d.id === id);
@@ -221,6 +230,36 @@ app.get("/api/me/rooms", async (req, res) => {
   const owner = await user(req);
   res.json(ownedRooms(await repository.all(), owner.id));
 });
+app.delete("/api/me/rooms/:id", admissionLimiter, async (req, res) => {
+  const owner = await user(req);
+  const input = z
+    .object({ endForEveryone: z.boolean().default(false) })
+    .parse(req.body ?? {});
+  const room = await repository.mutate(
+    z.string().uuid().parse(req.params.id),
+    (room) => {
+      removeOwnedRoom(room, owner.id, input.endForEveryone);
+    },
+  );
+  for (const socket of io.sockets.sockets.values()) {
+    if (
+      socket.rooms.has(room.id) &&
+      (input.endForEveryone || socket.data.user?.id === owner.id)
+    ) {
+      socket.emit(
+        "revoked",
+        input.endForEveryone
+          ? "The host ended this auction."
+          : "You removed this auction from My rooms.",
+      );
+      await socket.leave(room.id);
+    }
+  }
+  await removeVoice(room.id, input.endForEveryone ? undefined : owner.id);
+  emitRoom(room);
+  tradeNotifications.changed(room);
+  res.json({ ok: true });
+});
 app.get("/api/rooms", async (req, res) => {
   const query = String(req.query.search ?? "").toLowerCase();
   const league = String(req.query.league ?? "");
@@ -244,6 +283,7 @@ app.get("/api/rooms", async (req, res) => {
       maxTeams: r.settings.maxTeams,
       budget: r.settings.budget,
       squadSize: r.settings.squadSize,
+      currency: r.settings.currency ?? "credits",
       passwordRequired: !!r.passwordHash,
     })),
   });
@@ -333,6 +373,7 @@ app.get("/api/squads", async (req, res) => {
             roomId: r.id,
             roomName: r.settings.name,
             datasetId: r.settings.datasetId,
+            currency: r.settings.currency ?? "credits",
             member: m,
           })),
       ),
@@ -354,6 +395,7 @@ app.get("/api/squads/:id", async (req, res) => {
   res.json({
     member,
     datasetId: room.settings.datasetId,
+    currency: room.settings.currency ?? "credits",
     roomName: room.settings.name,
   });
 });
@@ -487,6 +529,7 @@ io.on("connection", (socket) => {
         m.connected = true;
         m.graceExpired = false;
         m.left = false;
+        m.archived = false;
         delete m.disconnectedAt;
         const previousHost = r.members.find((x) => x.userId === r.hostId);
         if (

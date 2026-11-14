@@ -672,6 +672,60 @@
   align-items: center;
   justify-content: center;
 }
+.auction-set-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--accent);
+  border-block: 1px solid var(--line);
+  padding: 8px 0;
+  margin-block: 6px;
+}
+.auction-set-banner > span {
+  margin-left: auto;
+  color: var(--secondary);
+  font-size: 10px;
+}
+.copy-squad-control {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  max-width: 100%;
+}
+.copy-squad-control > [role="status"] {
+  color: var(--secondary);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.copy-squad-control > [role="status"]:empty {
+  display: none;
+}
+.my-room-row > .button[aria-label^="Delete room:"] {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 9px;
+}
+.room-delete-dialog {
+  max-width: 580px;
+}
+.room-delete-dialog .room-tools-body {
+  display: grid;
+  gap: 20px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.bid-ladder-note {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1.9;
+}
 .theme-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -39,6 +39,7 @@ import { AuctionCountdown } from "./Countdown";
 import { useMobilePanels } from "./useMobilePanels";
 import { teamStyle } from "../../lib/teamTheme";
 import { RoomMemberMenu } from "../rooms/RoomMember";
+import { CopySquadButton } from "../../components/CopySquadButton";
 type Act = (
   type: Command["type"],
   payload?: Command["payload"],
@@ -99,6 +100,9 @@ export function Auction({
     );
   }, [voiceRequest]);
   const next = dataset.players.find((p) => p.id === room.queue[0]);
+  const nextSet = room.auctionSets?.find(
+    (set) => next && set.playerIds.includes(next.id),
+  );
   useEffect(() => {
     if (next?.imageUrl) {
       const image = new Image();
@@ -170,6 +174,11 @@ export function Auction({
           <TeamBadge team={currentTeam} size="large" />
           <h2>{currentTeam?.name}</h2>
           <p>{me.name}</p>
+          <CopySquadButton
+            member={me}
+            dataset={dataset}
+            roomName={room.settings.name}
+          />
           <div className="budget-display">
             <span>
               <Wallet size={14} />
@@ -302,6 +311,17 @@ export function Auction({
                       </span>
                     </span>
                   </div>
+                  {lot.setLabel && (
+                    <div className="auction-set-banner">
+                      <List size={14} />
+                      <strong>{lot.setLabel}</strong>
+                      <span>
+                        {room.settings.bidMode === "tiered"
+                          ? "Amount-based bids"
+                          : "Fixed bid step"}
+                      </span>
+                    </div>
+                  )}
                   <AnimatePresence mode="wait">
                     <motion.button
                       type="button"
@@ -554,6 +574,7 @@ export function Auction({
               <strong>End of this round</strong>
             )}
             <span className="muted">
+              {nextSet ? `${nextSet.label} · ` : ""}
               {room.queue.length} in queue · {room.unsold.length} unsold
             </span>
           </div>

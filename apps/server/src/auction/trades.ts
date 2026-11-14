@@ -95,7 +95,14 @@ function validate(
     to.budget + offer.offeredCash - offer.requestedCash,
   ];
   const minimum = Math.min(
-    ...dataset.players.map((player) => player.basePrice),
+    ...dataset.players
+      .filter(
+        (player) =>
+          room.settings.playerPool !== "current" ||
+          !dataset.season ||
+          player.currentSeason,
+      )
+      .map((player) => player.basePrice),
   );
   for (const [i, member] of [from, to].entries()) {
     const purchases = i === 0 ? fromPurchases : toPurchases;

@@ -1,5 +1,7 @@
 # Dataset import
 
+Season snapshots now live in `data/rosters/current-season.json`. See [roster sources and rules](ROSTERS.md). The six franchise leagues offer a current-season pool and the full original-plus-season pool. Original IDs, base prices and statistics are retained; newly added players have an explicitly labelled game base price and no invented statistics. The original ODI/Test files remain international pools with unspecified seasons, rather than being labelled as franchise rosters.
+
 The original nine files are preserved under `data/`. The adapter in `apps/server/src/data/catalog.ts` reads their actual default-exported JavaScript arrays. Only trusted repository-owned modules are evaluated: never expose this loader as a browser upload endpoint or run untrusted JavaScript.
 
 `npm.cmd run data:import` validates every row with Zod, produces stable SHA-256-derived player/team IDs, and writes an ignored JSON validation report. Errors fail the command; warnings are visible and do not discard the dataset. Repeated catalog loads are deterministic. Database seeding upserts identity and dataset-specific entries in one transaction.

@@ -14,6 +14,7 @@ import { Button } from "../../components/ui/button";
 import { PlayerPortrait } from "../players/PlayerPortrait";
 import { teamStyle } from "../../lib/teamTheme";
 import { RoomTools } from "../trades/RoomTools";
+import { CopySquadButton } from "../../components/CopySquadButton";
 export function Squads() {
   const userId = useAuth((s) => s.user?.id);
   const { data, error, isPending } = useQuery({
@@ -52,14 +53,20 @@ export function Squads() {
               </span>
               <h2>{s.roomName}</h2>
               <p>
-                {s.member.purchases.length} signings · {money(s.member.budget)}{" "}
-                remaining
+                {s.member.purchases.length} signings ·{" "}
+                {money(s.member.budget, undefined, s.currency)} remaining
               </p>
               <Button asChild variant="secondary">
                 <Link to={`/squads/${s.roomId}`}>
                   Manage squad <ArrowRight size={16} />
                 </Link>
               </Button>
+              <CopySquadButton
+                member={s.member}
+                roomName={s.roomName}
+                datasetId={s.datasetId}
+                currency={s.currency}
+              />
             </article>
           ))}
         </div>
@@ -73,9 +80,12 @@ export function SquadDetail() {
   const { data, error } = useQuery({
     queryKey: ["squad", squadId, userId],
     queryFn: () =>
-      api<{ member: Member; datasetId: string; roomName: string }>(
-        `/squads/${squadId}`,
-      ),
+      api<{
+        member: Member;
+        datasetId: string;
+        roomName: string;
+        currency?: "credits" | "inr";
+      }>(`/squads/${squadId}`),
   });
   const { data: dataset, error: datasetError } = useQuery({
     queryKey: ["dataset", data?.datasetId],
@@ -89,7 +99,10 @@ export function SquadDetail() {
     <Lineup
       key={data.member.id}
       member={data.member}
-      dataset={dataset}
+      dataset={{
+        ...dataset,
+        unit: data.currency === "inr" ? "inr" : dataset.unit,
+      }}
       roomId={squadId!}
     />
   );
@@ -156,6 +169,11 @@ function Lineup({
           description="Choose your playing XI, captain and vice-captain. Your auction purchases stay saved."
           action={
             <div className="squad-actions">
+              <CopySquadButton
+                member={member}
+                dataset={dataset}
+                roomName={dataset.league}
+              />
               <RoomTools roomId={roomId} dataset={dataset} squad />
               <Button disabled={busy} onClick={save}>
                 <Save size={17} />
@@ -204,7 +222,12 @@ function Lineup({
         </span>
       </div>
       <section className="panel lineup-panel">
-        {member.purchases.some((purchase) => purchase.tradeId) && <p className="muted text-sm">Player values below are original auction prices. Trade payments are reflected in your purse and trade history.</p>}
+        {member.purchases.some((purchase) => purchase.tradeId) && (
+          <p className="muted text-sm">
+            Player values below are original auction prices. Trade payments are
+            reflected in your purse and trade history.
+          </p>
+        )}
         <TeamBadge team={dataset.teams.find((t) => t.id === member.teamId)} />
         {["batter", "wicket-keeper", "all-rounder", "bowler"]
           .filter((r) => role === "all" || r === role)

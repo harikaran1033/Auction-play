@@ -1,5 +1,5 @@
 import { updateLineup } from "./lineup.js";
-import { randomUUID } from "node:crypto";
+import { randomUUID, randomInt } from "node:crypto";
 import {
   type Room,
   type User,
@@ -12,9 +12,23 @@ import {
   memberFor,
   nextBid,
   settingsSchema,
+  buildAuctionSets,
+  shuffle,
 } from "@cricket/shared";
 
 const active = (m: Member) => !m.blocked && !m.left;
+function prepareQueue(room: Room, dataset: Dataset, players: Player[]) {
+  if (room.settings.auctionOrder === "sets") {
+    const result = buildAuctionSets(dataset, players, randomInt);
+    room.auctionSets = result.sets;
+    room.queue = result.queue;
+  } else {
+    room.auctionSets = [];
+    const ids = players.map((player) => player.id);
+    room.queue =
+      room.settings.auctionOrder === "shuffle" ? shuffle(ids, randomInt) : ids;
+  }
+}
 function available(room: Room, dataset: Dataset, player: Player) {
   return room.members.filter(
     (m) => active(m) && !ineligible(room, m, player, dataset, player.basePrice),
@@ -37,6 +51,8 @@ export function nextLot(room: Room, dataset: Dataset, now: number) {
   }
   const playerId = room.queue.shift()!;
   room.lot = {
+    setLabel: room.auctionSets?.find((set) => set.playerIds.includes(playerId))
+      ?.label,
     id: randomUUID(),
     playerId,
     endsAt: now + room.settings.timerSeconds * 1000,
@@ -151,7 +167,13 @@ export function applyCommand(
         "NOT_READY",
         "At least two connected owners must all be ready",
       );
-      room.queue = dataset.players.map((p) => p.id);
+      prepareQueue(
+        room,
+        dataset,
+        room.settings.playerPool === "current" && dataset.season
+          ? dataset.players.filter((player) => player.currentSeason)
+          : dataset.players,
+      );
       room.round = 1;
       nextLot(room, dataset, now);
       break;
@@ -311,7 +333,11 @@ export function applyCommand(
         "INVALID_STATE",
         "Wait until this round finishes",
       );
-      room.queue = room.unsold;
+      prepareQueue(
+        room,
+        dataset,
+        dataset.players.filter((player) => room.unsold.includes(player.id)),
+      );
       room.unsold = [];
       room.round++;
       nextLot(room, dataset, now);

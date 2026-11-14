@@ -2,6 +2,8 @@ import { z } from "zod";
 export * from "./voice";
 export * from "./trades";
 import type { TradeOffer } from "./trades";
+import type { AuctionSet } from "./auctionSets";
+export * from "./auctionSets";
 
 export const roleSchema = z.enum([
   "batter",
@@ -14,6 +16,7 @@ export interface Player {
   id: string;
   name: string;
   nation: string;
+  eligibilityNation?: string;
   role: Role;
   battingStyle?: string;
   bowlingStyle?: string;
@@ -21,6 +24,8 @@ export interface Player {
   basePrice: number;
   sourceTeam?: string;
   stats: Record<string, unknown>;
+  currentSeason?: boolean;
+  priceSource?: "game-default";
 }
 export interface Team {
   id: string;
@@ -39,6 +44,10 @@ export interface Dataset {
   scale: number;
   teams: Team[];
   players: Player[];
+  season?: string;
+  rosterAsOf?: string;
+  rosterNote?: string;
+  currentPlayerCount?: number;
 }
 export const settingsSchema = z
   .object({
@@ -53,6 +62,11 @@ export const settingsSchema = z
     overseasCap: z.coerce.number().int().min(0).max(25).default(8),
     timerSeconds: z.coerce.number().int().min(5).max(120).default(20),
     increment: z.coerce.number().int().min(1).max(10000).default(10),
+    currency: z.enum(["credits", "inr"]).default("credits"),
+    bidMode: z.enum(["fixed", "tiered"]).default("fixed"),
+    lowBidStep: z.coerce.number().int().min(1).max(1000).default(50),
+    auctionOrder: z.enum(["sets", "shuffle", "source"]).default("sets"),
+    playerPool: z.enum(["current", "all"]).default("all"),
     reserveBudget: z.boolean().default(true),
     voice: z.boolean().default(false),
   })
@@ -85,6 +99,7 @@ export interface Member {
   sessionId?: string;
   blocked?: boolean;
   left?: boolean;
+  archived?: boolean;
   budget: number;
   purchases: Purchase[];
   lineup: string[];
@@ -100,6 +115,7 @@ export type Status =
   | "completed"
   | "cancelled";
 export interface Lot {
+  setLabel?: string;
   id: string;
   playerId: string;
   endsAt: number;
@@ -126,6 +142,7 @@ export interface Bid {
   at: number;
 }
 export interface Room {
+  auctionSets?: AuctionSet[];
   trades?: TradeOffer[];
   id: string;
   code: string;
@@ -211,19 +228,43 @@ export function ensure(
 export function money(
   value: number,
   dataset?: Pick<Dataset, "scale" | "unit">,
+  currency?: "credits" | "inr",
 ) {
-  return `${(value / (dataset?.scale ?? 100)).toLocaleString(undefined, { maximumFractionDigits: 2 })} ${dataset?.unit ?? "cr"}`;
+  if (
+    currency === "inr" ||
+    (currency !== "credits" && dataset?.unit === "inr")
+  ) {
+    const cr = value / (dataset?.scale ?? 100);
+    const format = (amount: number) =>
+      amount.toLocaleString("en-IN", { maximumFractionDigits: 2 });
+    return cr === 0 || Math.abs(cr) >= 1
+      ? `₹${format(cr)} Cr`
+      : `₹${format(cr * 100)} L`;
+  }
+  return `${(value / (dataset?.scale ?? 100)).toLocaleString(undefined, { maximumFractionDigits: 2 })} ${currency === "credits" ? "credits" : (dataset?.unit ?? "cr")}`;
 }
 export function isForeign(player: Player, dataset: Dataset) {
   return (
     dataset.domesticNations.length > 0 &&
-    !dataset.domesticNations.includes(player.nation)
+    !dataset.domesticNations.includes(player.eligibilityNation ?? player.nation)
   );
 }
 export function nextBid(room: Pick<Room, "lot" | "settings">, player: Player) {
   return room.lot?.highest
-    ? room.lot.bid + room.settings.increment
+    ? room.lot.bid + bidIncrement(room.settings, room.lot.bid)
     : player.basePrice;
+}
+export function bidIncrement(
+  settings: Pick<Settings, "increment"> &
+    Partial<Pick<Settings, "bidMode" | "lowBidStep">>,
+  current: number,
+) {
+  if (settings.bidMode !== "tiered") return settings.increment;
+  if (current < 1000) return settings.lowBidStep ?? 50;
+  if (current < 2000) return 100;
+  if (current < 3000) return 200;
+  if (current < 5000) return 250;
+  return 300;
 }
 export function ineligible(
   room: Pick<Room, "lot" | "settings">,
@@ -245,7 +286,11 @@ export function ineligible(
   )
     return "Overseas cap reached";
   const slots = room.settings.squadSize - member.purchases.length - 1;
-  const minimum = Math.min(...dataset.players.map((p) => p.basePrice));
+  const pool =
+    room.settings.playerPool === "current" && dataset.season
+      ? dataset.players.filter((p) => p.currentSeason)
+      : dataset.players;
+  const minimum = Math.min(...pool.map((p) => p.basePrice));
   if (room.settings.reserveBudget && member.budget - amount < slots * minimum)
     return "Reserve budget for remaining squad slots";
   return undefined;
@@ -271,6 +316,7 @@ export function publicRoom(room: Room): RoomView {
 }
 
 export interface OwnedRoomSummary {
+  isHost?: boolean;
   id: string;
   name: string;
   datasetId: string;

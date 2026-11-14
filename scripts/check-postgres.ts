@@ -6,6 +6,7 @@ import { settingsSchema, type Command, type User } from "@cricket/shared";
 import { loadCatalog } from "../apps/server/src/data/catalog.js";
 import { makeRoom, joinRoom } from "../apps/server/src/rooms.js";
 import { PgRepository } from "../apps/server/src/storage.js";
+import { seedCatalog } from "../apps/server/src/data/seedCatalog.js";
 import { applyCommand, tickRoom } from "../apps/server/src/auction/engine.js";
 import {
   proposeTrade,
@@ -50,6 +51,17 @@ try {
     }),
   } as unknown as Pool;
   const repository = new PgRepository(testingPool);
+  // New roster identities must exist before auction_lots/purchases reference them.
+  const catalog = await loadCatalog();
+  await seedCatalog(testingPool, catalog.datasets);
+  await seedCatalog(testingPool, catalog.datasets);
+  const added = catalog.datasets
+    .flatMap((d) => d.players)
+    .find((p) => p.priceSource === "game-default")!;
+  assert.equal(
+    (await db.query("select id from players where id=$1", [added.id])).rowCount,
+    1,
+  );
   const dataset = (await loadCatalog()).datasets.find(
     (d) => d.id === "fixture",
   )!;
@@ -154,6 +166,7 @@ try {
     dataset,
     settingsSchema.parse({
       name: "Rollback-only repository check",
+      auctionOrder: "source",
       datasetId: dataset.id,
       teamId: dataset.teams[0].id,
       maxTeams: 2,

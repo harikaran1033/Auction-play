@@ -24,21 +24,25 @@ On this machine, PowerShell blocks `npm.ps1`; use `npm.cmd`. If npm encounters t
 
 ## Your league data
 
-| Dataset | Unique players | Available teams |
-| --- | ---: | ---: |
-| IPL | 237 | 10 |
-| The Hundred | 96 | 6 |
-| SA20 | 101 | 6 |
-| BBL | 90 | 8 |
-| CPL | 93 | 6 |
-| MLC | 104 | 6 |
-| ODI | 132 | 9 |
-| Test | 155 | 10 |
-| Development fixture | 5 | 5 |
+| Dataset | Season pool | Full pool | Available teams |
+| --- | ---: | ---: | ---: |
+| IPL 2026 | 274 | 331 | 10 |
+| The Hundred 2026 | 143 | 169 | 8 |
+| SA20 season 5 / 2027 | 115 | 146 | 6 |
+| BBL 16 / 2026–27 | 121 | 150 | 8 |
+| CPL 2026 | 125 | 151 | 7 |
+| MLC 2026 | 118 | 152 | 6 |
+| ODI original international pool | — | 132 | 9 |
+| Test original international pool | — | 155 | 10 |
+| Development fixture | — | 5 | 5 |
 
-Eight main datasets contain **1,008 unique player entries**, plus five fixture entries. SA20 contains 11 duplicate records. The importer retains the first player entry, reports each duplicate, normalizes nation/role/team aliases, and leaves every source file unchanged. Run `npm.cmd run data:import` for the report in `.runtime/import-report.json`.
+Eight main datasets contain **1,386 player entries**, plus five fixture entries. The season snapshots add 378 missing entries while keeping original player/team IDs, prices and statistics. Explicit spelling/nickname aliases prevent duplicate entries; the original SA20 file's 11 repeated records are still reported and retained only once. Original source files remain unchanged. Run `npm.cmd run data:import` for the report in `.runtime/import-report.json`.
 
-Uploaded files do not identify seasons, price currencies or verified roster completeness. The app labels the season as unspecified and uses **auction credits**. `BASE_PRICE: 1.5` becomes the integer `150`; budgets and increments use the same hundredth-credit unit. The default budget `10000` displays as `100 credits`. No floating-point crore arithmetic is used. Fixture missing prices explicitly default to one credit; real records with missing prices fail validation. The Hundred offers its six supplied source teams; absent franchises are not invented.
+The six franchise leagues offer dated season pools and the full original-plus-season pool. [Sources, dates and coverage limits](docs/ROSTERS.md) are documented; BBL is a published-contract snapshot and CPL includes the published local/overseas lists. ODI/Test remain original international pools with unspecified seasons. Statistics from the uploaded files are not relabelled as current-season statistics. Added players have no invented statistics and open at a labelled game price of 0.30, rather than a claimed official contract price.
+
+New rooms default to randomized domestic/overseas role sets, rupee display in crores/lakhs, and the amount-based bid ladder. Hosts can choose credits, fixed increments, a full shuffle or original order. `BASE_PRICE: 1.5` becomes the integer `150`; the budget `10000` displays as ₹100 Cr or 100 credits. All arithmetic uses integers. Existing auctions retain their queued players and settings. PostgreSQL startup safely registers catalogue additions automatically.
+
+**My rooms** includes personal deletion and an explicit host option to end an auction for everyone. Completed squads remain in **My squads**. **Copy squad** is available both during the auction and from saved squads.
 
 See [data import](docs/DATA.md) for adapters, aliases, international eligibility and repeatable database seeds.
 

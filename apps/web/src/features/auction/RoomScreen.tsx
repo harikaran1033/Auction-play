@@ -1,7 +1,7 @@
 import { Auction } from "./Auction";
 import { Results } from "./Results";
 import { enableAudio } from "../../lib/preferences";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -47,11 +47,19 @@ export function RoomScreen() {
       closeRoom();
     };
   }, [roomId, token]);
-  const { data: dataset, error: datasetError } = useQuery({
+  const { data: rawDataset, error: datasetError } = useQuery({
     queryKey: ["dataset", room?.settings.datasetId],
     enabled: !!room,
     queryFn: () => api<Dataset>(`/leagues/${room!.settings.datasetId}`),
   });
+  const dataset = useMemo(
+    () =>
+      rawDataset && {
+        ...rawDataset,
+        unit: room?.settings.currency === "inr" ? "inr" : rawDataset.unit,
+      },
+    [rawDataset, room?.settings.currency],
+  );
   useAuctionSounds(roomId, dataset);
   useEffect(() => {
     if (!room) return;

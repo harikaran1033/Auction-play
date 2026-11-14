@@ -47,6 +47,10 @@ test("two owners create, join, ready, bid, pass, reconnect, complete and retain 
   const a = await first.newPage();
   const b = await second.newPage();
   await a.goto("/rooms/create?league=ipl");
+  await a.getByLabel("Currency display").selectOption("credits");
+  await a.getByLabel("Bid increments").selectOption("fixed");
+  await a.getByLabel("Player order").selectOption("source");
+  await a.getByLabel("Player pool").selectOption("all");
   await a.getByRole("button", { name: "CSK Chennai Super Kings" }).click();
   await a.getByLabel("Room name").fill("Browser acceptance auction");
   await a.getByLabel("Players per squad").fill("1");
@@ -123,7 +127,7 @@ test("mobile home has no horizontal overflow and dataset search works", async ({
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Welcome to the clubhouse." }),
+    page.getByRole("heading", { name: "Welcome to AuctionPlay." }),
   ).toBeVisible();
   expect(
     await page.evaluate(

@@ -274,6 +274,63 @@ export function Lobby({
                 </select>
               </label>
               <label>
+                Currency
+                <select
+                  value={room.settings.currency ?? "credits"}
+                  disabled={locked}
+                  onChange={(e) =>
+                    void act("settings", { currency: e.target.value })
+                  }
+                >
+                  <option value="credits">Auction credits</option>
+                  <option value="inr">₹ Crores / lakhs</option>
+                </select>
+              </label>
+              <label>
+                Player order
+                <select
+                  value={room.settings.auctionOrder ?? "source"}
+                  disabled={locked}
+                  onChange={(e) =>
+                    void act("settings", { auctionOrder: e.target.value })
+                  }
+                >
+                  <option value="sets">Randomized role sets</option>
+                  <option value="shuffle">Full-pool shuffle</option>
+                  <option value="source">Original data order</option>
+                </select>
+              </label>
+              <label>
+                Bid increments
+                <select
+                  value={room.settings.bidMode ?? "fixed"}
+                  disabled={locked}
+                  onChange={(e) =>
+                    void act("settings", { bidMode: e.target.value })
+                  }
+                >
+                  <option value="fixed">Fixed step</option>
+                  <option value="tiered">Amount-based ladder</option>
+                </select>
+              </label>
+              {dataset.season && (
+                <label>
+                  Player pool
+                  <select
+                    value={room.settings.playerPool ?? "all"}
+                    disabled={locked}
+                    onChange={(e) =>
+                      void act("settings", { playerPool: e.target.value })
+                    }
+                  >
+                    <option value="current">
+                      {dataset.season} season roster
+                    </option>
+                    <option value="all">Full original + season pool</option>
+                  </select>
+                </label>
+              )}
+              <label>
                 Voice
                 <select
                   value={String(room.settings.voice)}
@@ -385,7 +442,9 @@ export function Lobby({
           <strong>Room rules</strong>
           <span>
             {room.settings.timerSeconds}s bid clock ·{" "}
-            {money(room.settings.increment, dataset)} step
+            {room.settings.bidMode === "tiered"
+              ? "Amount-based bid ladder"
+              : `${money(room.settings.increment, dataset)} step`}
           </span>
           <span>
             {room.settings.reserveBudget

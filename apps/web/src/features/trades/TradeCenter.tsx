@@ -367,7 +367,9 @@ export function TradeCenter({
               <legend>You offer</legend>
               {players(me, give, setGive, "Offer player")}
               <label>
-                Credits you offer
+                {dataset.unit === "inr"
+                  ? "Amount you offer (₹ Cr)"
+                  : "Credits you offer"}
                 <input
                   inputMode="decimal"
                   value={giveCash}
@@ -379,7 +381,9 @@ export function TradeCenter({
               <legend>You request</legend>
               {players(target, receive, setReceive, "Request player")}
               <label>
-                Credits you request
+                {dataset.unit === "inr"
+                  ? "Amount you request (₹ Cr)"
+                  : "Credits you request"}
                 <input
                   inputMode="decimal"
                   value={receiveCash}

@@ -86,6 +86,13 @@ describe("player statistics presentation", () => {
       format: "T20",
       season: "IPL 2025",
     });
+    expect(
+      datasetContext({
+        id: "ipl",
+        name: "2026 roster + original pool",
+        season: "2026",
+      }).season,
+    ).toBe("2026 roster · statistics season not verified");
   });
   it("derives boundary runs only when the uploaded figures support the chart", () => {
     expect(

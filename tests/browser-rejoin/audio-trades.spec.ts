@@ -74,6 +74,7 @@ test("personal auction audio and mutually accepted trades update live and saved 
       headers: { Authorization: `Bearer ${a.token}` },
       data: {
         name: "Audio and trade acceptance",
+        auctionOrder: "source",
         datasetId: "ipl",
         teamId: dataset.teams[0].id,
         visibility: "private",

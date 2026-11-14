@@ -5,6 +5,7 @@ export default ts.config(
   {
     ignores: [
       "**/dist/**",
+      ".runtime/**",
       "**/node_modules/**",
       "data/**",
       "apps/web/android/**",

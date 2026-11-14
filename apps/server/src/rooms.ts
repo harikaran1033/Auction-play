@@ -97,6 +97,7 @@ export function joinRoom(
   const existing = checkJoin(room, user, password);
   if (existing) {
     existing.left = false;
+    existing.archived = false;
     return;
   }
   ensure(
@@ -120,7 +121,9 @@ export function ownedRooms(rooms: Room[], userId: string): OwnedRoomSummary[] {
       (room) =>
         room.status !== "cancelled" &&
         !room.blocks.includes(userId) &&
-        room.members.some((m) => m.userId === userId && !m.blocked),
+        room.members.some(
+          (m) => m.userId === userId && !m.blocked && !m.archived,
+        ),
     )
     .sort(
       (a, b) =>
@@ -133,6 +136,7 @@ export function ownedRooms(rooms: Room[], userId: string): OwnedRoomSummary[] {
         (m) => m.userId === userId && !m.blocked,
       )!;
       return {
+        isHost: room.hostId === userId,
         id: room.id,
         name: room.settings.name,
         datasetId: room.settings.datasetId,
@@ -144,4 +148,51 @@ export function ownedRooms(rooms: Room[], userId: string): OwnedRoomSummary[] {
         path: roomPath(room),
       };
     });
+}
+
+export function removeOwnedRoom(
+  room: Room,
+  userId: string,
+  endForEveryone = false,
+  now = Date.now(),
+) {
+  const member = room.members.find(
+    (item) => item.userId === userId && !item.blocked,
+  );
+  ensure(
+    member && !room.blocks.includes(userId),
+    "FORBIDDEN",
+    "Room membership required",
+  );
+  if (endForEveryone) {
+    ensure(
+      room.hostId === userId,
+      "FORBIDDEN",
+      "Only the host can end this auction for everyone",
+    );
+    ensure(
+      room.status !== "completed",
+      "COMPLETED",
+      "Completed squads remain saved; remove this room from your own list instead",
+    );
+    room.status = "cancelled";
+  }
+  member.archived = true;
+  member.left = true;
+  member.connected = false;
+  member.disconnectedAt = now;
+  delete member.sessionId;
+  if (room.status === "lobby")
+    room.members = room.members.filter((item) => item.id !== member.id);
+  if (
+    room.hostId === userId &&
+    !["completed", "cancelled"].includes(room.status)
+  ) {
+    const successor = room.members
+      .filter((item) => !item.left && !item.blocked && item.connected)
+      .sort((a, b) => a.joinedAt - b.joinedAt)[0];
+    if (successor) room.hostId = successor.userId;
+    else room.status = room.status === "lobby" ? "cancelled" : "paused";
+  }
+  room.version++;
 }

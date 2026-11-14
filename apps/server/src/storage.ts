@@ -244,5 +244,5 @@ export async function createRepository() {
     );
   if (process.env.NODE_ENV === "production")
     throw new Error("Production requires DATABASE_URL and Supabase Auth");
-  return new FileRepository().init();
+  return new FileRepository(process.env.LOCAL_ROOM_FILE).init();
 }
